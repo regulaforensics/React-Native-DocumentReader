@@ -11,6 +11,7 @@ import { StyleSheet, View, Button, DeviceEventEmitter, Text, Image, CheckBox, Sc
 import Regula from 'react-native-regula-test';
 import * as RNFS from 'react-native-fs';
 import RadioGroup from 'react-native-radio-buttons-group';
+import ImagePicker from 'react-native-image-picker';
 var RNRegulaDocumentReader = Regula.RNRegulaDocumentReader;
 var DocumentReaderResults = Regula.DocumentReaderResults;
 
@@ -210,8 +211,8 @@ export default class App extends Component {
           </View>
         </View>
 
-        <ScrollView style={{padding: 5, alignSelf: 'stretch'}}>
-          <RadioGroup style={{alignSelf: 'stretch'}} radioButtons={this.state.scenarios} onPress={(data) => {
+        <ScrollView style={{ padding: 5, alignSelf: 'stretch' }}>
+          <RadioGroup style={{ alignSelf: 'stretch' }} radioButtons={this.state.scenarios} onPress={(data) => {
             this.setState({ data });
             var selectedItem;
             for (var index in data) {
@@ -258,25 +259,34 @@ export default class App extends Component {
             }}
             title="Scan document"
           />
-          <Text style={{padding: 5}}></Text>
+          <Text style={{ padding: 5 }}></Text>
           <Button
             onPress={() => {
-              RNRegulaDocumentReader.scan({
-                functionality: {
-                  videoCaptureMotionControl: true,
-                },
-                customization: {
-                  showResultStatusMessages: true,
-                  showStatusMessages: true
-                },
-                processParams: {
-                  scenario: this.state.selectedScenario,
-                  doRfid: this.state.doRfid,
-                },
-              },
-                (jstring) => {
-                  this.displayResults(jstring);
-                });
+              ImagePicker.showImagePicker({}, (response) => {
+                if (response.didCancel) {
+                  console.log('User cancelled image picker');
+                } else if (response.error) {
+                  console.log('ImagePicker Error: ', response.error);
+                } else if (response.customButton) {} else {
+                  RNRegulaDocumentReader.scanImage({
+                    functionality: {
+                      videoCaptureMotionControl: true,
+                    },
+                    customization: {
+                      showResultStatusMessages: true,
+                      showStatusMessages: true
+                    },
+                    processParams: {
+                      scenario: this.state.selectedScenario,
+                      doRfid: this.state.doRfid,
+                    },
+                  },
+                    response.data,
+                    (jstring) => {
+                      this.displayResults(jstring);
+                    });
+                }
+              });
             }}
             title="     Scan image     "
           />
