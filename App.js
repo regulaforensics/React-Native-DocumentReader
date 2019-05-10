@@ -1,13 +1,5 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
 import React, { Component } from 'react';
-import { StyleSheet, View, Button, DeviceEventEmitter, Text, Image, CheckBox, ScrollView } from 'react-native';
+import { StyleSheet, View, Button, Text, Image, CheckBox, ScrollView, NativeEventEmitter, Platform } from 'react-native';
 import Regula from 'react-native-regula-test';
 import * as RNFS from 'react-native-fs';
 import RadioGroup from 'react-native-radio-buttons-group';
@@ -15,14 +7,22 @@ import ImagePicker from 'react-native-image-picker';
 var RNRegulaDocumentReader = Regula.RNRegulaDocumentReader;
 var DocumentReaderResults = Regula.DocumentReaderResults;
 
-RNRegulaDocumentReader.prepareDataBase({}, (respond) => { console.log(respond) });
-RNFS.readFileAssets('regula.license', 'base64').then((res) => {
-  RNRegulaDocumentReader.initiallize({
-    licenseKey: res
-  }, (respond) => { console.log(respond) })
-})
+var licPath = Platform.OS === 'ios' ? (RNFS.MainBundlePath + "/regula.license") : "regula.license";
+var readFile = Platform.OS === 'ios' ? RNFS.readFile : RNFS.readFileAssets;
+RNRegulaDocumentReader.prepareDataBase({}, (respond) => { 
+  console.log(respond);
+  readFile(licPath, 'base64').then((res) => {
+    RNRegulaDocumentReader.initialize({
+      licenseKey: res
+    }, (respond) => { console.log(respond) })
+  });
+});
 
-this.listener = DeviceEventEmitter.addListener('prepareDatabaseProgressChangeEvent', e => console.log(e["msg"]))
+const eventManager = new NativeEventEmitter(RNRegulaDocumentReader);
+eventManager.addListener(
+  'prepareDatabaseProgressChangeEvent',
+  e => console.log(e["msg"])
+);
 
 export default class App extends Component {
 
@@ -254,7 +254,8 @@ export default class App extends Component {
                 },
               },
                 (jstring) => {
-                  this.displayResults(jstring);
+                  if(jstring.substring(0, 8) == "Success:")
+                    this.displayResults(jstring.substring(8));
                 });
             }}
             title="Scan document"
@@ -283,7 +284,8 @@ export default class App extends Component {
                   },
                     response.data,
                     (jstring) => {
-                      this.displayResults(jstring);
+                      if(jstring.substring(0, 8) == "Success:")
+                        this.displayResults(jstring.substring(8));
                     });
                 }
               });
