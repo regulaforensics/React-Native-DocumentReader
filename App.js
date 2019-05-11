@@ -9,7 +9,7 @@ var DocumentReaderResults = Regula.DocumentReaderResults;
 
 var licPath = Platform.OS === 'ios' ? (RNFS.MainBundlePath + "/regula.license") : "regula.license";
 var readFile = Platform.OS === 'ios' ? RNFS.readFile : RNFS.readFileAssets;
-RNRegulaDocumentReader.prepareDataBase({}, (respond) => { 
+RNRegulaDocumentReader.prepareDataBase({}, (respond) => {
   console.log(respond);
   readFile(licPath, 'base64').then((res) => {
     RNRegulaDocumentReader.initialize({
@@ -254,9 +254,9 @@ export default class App extends Component {
                 },
               },
                 (jstring) => {
-                  if(jstring.substring(0, 8) == "Success:")
+                  if (jstring.substring(0, 8) == "Success:")
                     this.displayResults(jstring.substring(8));
-				  else
+                  else
                     console.log(jstring);
                 });
             }}
@@ -270,7 +270,7 @@ export default class App extends Component {
                   console.log('User cancelled image picker');
                 } else if (response.error) {
                   console.log('ImagePicker Error: ', response.error);
-                } else if (response.customButton) {} else {
+                } else if (response.customButton) { } else {
                   RNRegulaDocumentReader.scanImage({
                     functionality: {
                       videoCaptureMotionControl: true,
@@ -286,9 +286,9 @@ export default class App extends Component {
                   },
                     response.data,
                     (jstring) => {
-                      if(jstring.substring(0, 8) == "Success:")
+                      if (jstring.substring(0, 8) == "Success:")
                         this.displayResults(jstring.substring(8));
-					  else
+                      else
                         console.log(jstring);
                     });
                 }
