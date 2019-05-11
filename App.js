@@ -256,6 +256,8 @@ export default class App extends Component {
                 (jstring) => {
                   if(jstring.substring(0, 8) == "Success:")
                     this.displayResults(jstring.substring(8));
+				  else
+                    console.log(jstring);
                 });
             }}
             title="Scan document"
@@ -286,6 +288,8 @@ export default class App extends Component {
                     (jstring) => {
                       if(jstring.substring(0, 8) == "Success:")
                         this.displayResults(jstring.substring(8));
+					  else
+                        console.log(jstring);
                     });
                 }
               });
