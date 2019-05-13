@@ -224,7 +224,7 @@ export default class App extends Component {
           }} />
         </ScrollView>
 
-        <View style={{ flexDirection: 'row', padding: 5 }}>
+        <View style={{ flexDirection: 'row', padding: 5, opacity:Platform.OS === 'ios' ? 0 : 100}}>
           <CheckBox
             title='Click Here'
             value={this.state.doRfid}
