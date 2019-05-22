@@ -7,17 +7,6 @@ import ImagePicker from 'react-native-image-picker';
 var RNRegulaDocumentReader = Regula.RNRegulaDocumentReader;
 var DocumentReaderResults = Regula.DocumentReaderResults;
 
-var licPath = Platform.OS === 'ios' ? (RNFS.MainBundlePath + "/regula.license") : "regula.license";
-var readFile = Platform.OS === 'ios' ? RNFS.readFile : RNFS.readFileAssets;
-RNRegulaDocumentReader.prepareDataBase({}, (respond) => {
-  console.log(respond);
-  readFile(licPath, 'base64').then((res) => {
-    RNRegulaDocumentReader.initialize({
-      licenseKey: res
-    }, (respond) => { console.log(respond) })
-  });
-});
-
 const eventManager = new NativeEventEmitter(RNRegulaDocumentReader);
 eventManager.addListener(
   'prepareDatabaseProgressChangeEvent',
@@ -28,6 +17,49 @@ export default class App extends Component {
 
   constructor(props) {
     super(props);
+    var licPath = Platform.OS === 'ios' ? (RNFS.MainBundlePath + "/regula.license") : "regula.license";
+    var readFile = Platform.OS === 'ios' ? RNFS.readFile : RNFS.readFileAssets;
+    RNRegulaDocumentReader.prepareDataBase({}, (respond) => {
+      console.log(respond);
+      readFile(licPath, 'base64').then((res) => {
+        RNRegulaDocumentReader.initialize({
+          licenseKey: res
+        }, (respond) => { 
+          console.log(respond);
+          RNRegulaDocumentReader.getAvailableScenarios((jstring)=>{
+            var scenariosTemp = JSON.parse(jstring);
+            var scenarios=[];
+            for(var i in scenariosTemp){
+              scenarios.push({
+                label: scenariosTemp[i],
+                value: i
+               });
+            }
+            for(var i in this.state.scenarios){
+              this.state.scenarios[i]["disabled"]=true;
+            }
+            for(var i in scenarios){
+              for(var j in this.state.scenarios){
+                if(scenarios[i]["label"] === this.state.scenarios[j]["label"]){
+                  this.state.scenarios[j]["disabled"]=false;
+                }
+              }
+            }
+            var todelete=[];
+            for(var j in this.state.scenarios){
+              if(this.state.scenarios[j]["disabled"] === true){
+                todelete.push(j);
+              }
+            }
+            for(i = todelete.length-1; i>=0;i--){
+              this.state.scenarios.splice(todelete[i],1);
+            }
+            this.forceUpdate();
+          });
+         })
+      });
+    });
+
     this.state = {
       fullName: "Surname and given names",
       doRfid: false,
@@ -213,7 +245,7 @@ export default class App extends Component {
 
         <ScrollView style={{ padding: 5, alignSelf: 'stretch' }}>
           <RadioGroup style={{ alignSelf: 'stretch' }} radioButtons={this.state.scenarios} onPress={(data) => {
-            this.setState({ data });
+            //this.setState({ data });
             var selectedItem;
             for (var index in data) {
               if (data[index]['selected']) {
