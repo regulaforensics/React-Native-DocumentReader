@@ -19,50 +19,58 @@ export default class App extends Component {
     super(props);
     var licPath = Platform.OS === 'ios' ? (RNFS.MainBundlePath + "/regula.license") : "regula.license";
     var readFile = Platform.OS === 'ios' ? RNFS.readFile : RNFS.readFileAssets;
-    RNRegulaDocumentReader.prepareDataBase({}, (respond) => {
+    RNRegulaDocumentReader.prepareDataBase("Full", (respond) => {
       console.log(respond);
       readFile(licPath, 'base64').then((res) => {
         RNRegulaDocumentReader.initialize({
           licenseKey: res
-        }, (respond) => { 
+        }, (respond) => {
           console.log(respond);
-          RNRegulaDocumentReader.getAvailableScenarios((jstring)=>{
+          RNRegulaDocumentReader.getCanRFID((canRfid)=>{
+            if(canRfid){
+              this.setState({canRfid: true});
+              this.setState({canRfidTitle: ''});
+            }
+          });
+          RNRegulaDocumentReader.getAvailableScenarios((jstring) => {
             var scenariosTemp = JSON.parse(jstring);
-            var scenarios=[];
-            for(var i in scenariosTemp){
+            var scenarios = [];
+            for (var i in scenariosTemp) {
               scenarios.push({
                 label: scenariosTemp[i],
                 value: i
-               });
+              });
             }
-            for(var i in this.state.scenarios){
-              this.state.scenarios[i]["disabled"]=true;
+            for (var i in this.state.scenarios) {
+              this.state.scenarios[i]["disabled"] = true;
             }
-            for(var i in scenarios){
-              for(var j in this.state.scenarios){
-                if(scenarios[i]["label"] === this.state.scenarios[j]["label"]){
-                  this.state.scenarios[j]["disabled"]=false;
+            for (var i in scenarios) {
+              for (var j in this.state.scenarios) {
+                if (scenarios[i]["label"] === this.state.scenarios[j]["label"]) {
+                  this.state.scenarios[j]["disabled"] = false;
                 }
               }
             }
-            var todelete=[];
-            for(var j in this.state.scenarios){
-              if(this.state.scenarios[j]["disabled"] === true){
+            var todelete = [];
+            for (var j in this.state.scenarios) {
+              if (this.state.scenarios[j]["disabled"] === true) {
                 todelete.push(j);
               }
             }
-            for(i = todelete.length-1; i>=0;i--){
-              this.state.scenarios.splice(todelete[i],1);
+            for (i = todelete.length - 1; i >= 0; i--) {
+              this.state.scenarios.splice(todelete[i], 1);
             }
             this.forceUpdate();
           });
-         })
+        })
       });
     });
 
     this.state = {
       fullName: "Surname and given names",
       doRfid: false,
+      canRfid: false,
+      canRfidTitle: '(unavailable)',
       scenarios: [
         {
           label: "Mrz",
@@ -178,19 +186,48 @@ export default class App extends Component {
     console.log("=============================================");
   }
 
-  displayResults(jstring) {
-    if (jstring != "Canceled" && jstring.substring(0, 5) != "Error") {
-      var results = DocumentReaderResults.fromJson(JSON.parse(jstring));
-      this.setState({ fullName: results.getTextFieldValueByType(25) });
-      if (results.getGraphicFieldImageByType(207) != null) {
-        var base64DocFront = "data:image/png;base64," + results.getGraphicFieldImageByType(207);
-        this.setState({ docFront: { uri: base64DocFront } });
+  displayResults(results) {
+    this.setState({ fullName: results.getTextFieldValueByType(25) });
+    if (results.getGraphicFieldImageByType(207) != null) {
+      var base64DocFront = "data:image/png;base64," + results.getGraphicFieldImageByType(207);
+      this.setState({ docFront: { uri: base64DocFront } });
+    }
+    if (results.getGraphicFieldImageByType(201) != null) {
+      var base64Portrait = "data:image/png;base64," + results.getGraphicFieldImageByType(201);
+      this.setState({ portrait: { uri: base64Portrait } });
+    }
+    //this.logResults(results);
+  }
+
+  handleResults(jstring) {
+    var results = DocumentReaderResults.fromJson(JSON.parse(jstring));
+    if (this.state.doRfid && results != null && results.chipPage != 0) {
+      accessKey = null;
+      accessKey = results.getTextFieldValueByType(51);
+      if (accessKey != null && accessKey != "") {
+        accessKey = accessKey.replace(/^/g, '').replace(/\n/g, '');
+        RNRegulaDocumentReader.setRfidScenario({
+          mrz: accessKey,
+          pacePasswordType: 1,
+        }, () => { });
+      } else {
+        accessKey = null;
+        accessKey = results.getTextFieldValueByType(159);
+        if (accessKey != null && accessKey != "") {
+          RNRegulaDocumentReader.setRfidScenario({
+            password: accessKey,
+            pacePasswordType: 2,
+          }, () => { });
+        }
       }
-      if (results.getGraphicFieldImageByType(201) != null) {
-        var base64Portrait = "data:image/png;base64," + results.getGraphicFieldImageByType(201);
-        this.setState({ portrait: { uri: base64Portrait } });
-      }
-      //this.logResults(results);
+      RNRegulaDocumentReader.startRFIDReader((jstring) => {
+        if (jstring.substring(0, 8) == "Success:")
+          this.displayResults(DocumentReaderResults.fromJson(JSON.parse(jstring.substring(8))));
+        else
+          console.log(jstring);
+      });
+    } else {
+      this.displayResults(results);
     }
   }
 
@@ -256,25 +293,31 @@ export default class App extends Component {
           }} />
         </ScrollView>
 
-        <View style={{ flexDirection: 'row', padding: 5, opacity:Platform.OS === 'ios' ? 0 : 100}}>
+        <View style={{ flexDirection: 'row', padding: 5}}>
           <CheckBox
             title='Click Here'
             value={this.state.doRfid}
-            onChange={() => this.setState({ doRfid: !this.state.doRfid })}
+            onChange={() => {
+              if(this.state.canRfid){
+                this.setState({ doRfid: !this.state.doRfid })
+              }
+            }}
+            disabled={!this.state.canRfid}
           />
           <Text style={{
             padding: 5,
           }}>
-            Process rfid reading
+            {'Process rfid reading'+this.state.canRfidTitle}
         </Text>
         </View>
 
         <View style={{ flexDirection: 'row' }}>
           <Button
             onPress={() => {
-              RNRegulaDocumentReader.scan({
+              RNRegulaDocumentReader.showScannerWithCameraIDAndOpts(-1, {
                 functionality: {
                   videoCaptureMotionControl: true,
+                  showCaptureButton: true
                 },
                 customization: {
                   showResultStatusMessages: true,
@@ -287,7 +330,7 @@ export default class App extends Component {
               },
                 (jstring) => {
                   if (jstring.substring(0, 8) == "Success:")
-                    this.displayResults(jstring.substring(8));
+                    this.handleResults(jstring.substring(8));
                   else
                     console.log(jstring);
                 });
@@ -303,9 +346,10 @@ export default class App extends Component {
                 } else if (response.error) {
                   console.log('ImagePicker Error: ', response.error);
                 } else if (response.customButton) { } else {
-                  RNRegulaDocumentReader.scanImage({
+                  RNRegulaDocumentReader.recognizeImageWithOpts({
                     functionality: {
                       videoCaptureMotionControl: true,
+                      showCaptureButton: true
                     },
                     customization: {
                       showResultStatusMessages: true,
@@ -319,7 +363,7 @@ export default class App extends Component {
                     response.data,
                     (jstring) => {
                       if (jstring.substring(0, 8) == "Success:")
-                        this.displayResults(jstring.substring(8));
+                        this.handleResults(jstring.substring(8));
                       else
                         console.log(jstring);
                     });
