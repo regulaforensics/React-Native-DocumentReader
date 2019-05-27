@@ -314,7 +314,7 @@ export default class App extends Component {
         <View style={{ flexDirection: 'row' }}>
           <Button
             onPress={() => {
-              RNRegulaDocumentReader.showScannerWithCameraIDAndOpts(-1, {
+              RNRegulaDocumentReader.setConfig( {
                 functionality: {
                   videoCaptureMotionControl: true,
                   showCaptureButton: true
@@ -327,7 +327,8 @@ export default class App extends Component {
                   scenario: this.state.selectedScenario,
                   doRfid: this.state.doRfid,
                 },
-              },
+              },(str)=>{console.log(str)});
+              RNRegulaDocumentReader.showScanner(
                 (jstring) => {
                   if (jstring.substring(0, 8) == "Success:")
                     this.handleResults(jstring.substring(8));
@@ -346,7 +347,7 @@ export default class App extends Component {
                 } else if (response.error) {
                   console.log('ImagePicker Error: ', response.error);
                 } else if (response.customButton) { } else {
-                  RNRegulaDocumentReader.recognizeImageWithOpts({
+                  RNRegulaDocumentReader.setConfig( {
                     functionality: {
                       videoCaptureMotionControl: true,
                       showCaptureButton: true
@@ -359,7 +360,8 @@ export default class App extends Component {
                       scenario: this.state.selectedScenario,
                       doRfid: this.state.doRfid,
                     },
-                  },
+                  },(str)=>{console.log(str)});
+                  RNRegulaDocumentReader.recognizeImage(
                     response.data,
                     (jstring) => {
                       if (jstring.substring(0, 8) == "Success:")
