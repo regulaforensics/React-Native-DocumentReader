@@ -1,27 +1,32 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Button, Text, Image, CheckBox, ScrollView, NativeEventEmitter, Platform } from 'react-native';
-import Regula from 'react-native-regula-test';
+import Regula from 'react-native-document-reader-api-beta';
 import * as RNFS from 'react-native-fs';
 import RadioGroup from 'react-native-radio-buttons-group';
 import ImagePicker from 'react-native-image-picker';
 var RNRegulaDocumentReader = Regula.RNRegulaDocumentReader;
 var DocumentReaderResults = Regula.DocumentReaderResults;
+var Enum = Regula.Enum;
 
 const eventManager = new NativeEventEmitter(RNRegulaDocumentReader);
-eventManager.addListener(
-  'prepareDatabaseProgressChangeEvent',
-  e => console.log(e["msg"])
-);
 
 export default class App extends Component {
 
   constructor(props) {
     super(props);
+    eventManager.addListener(
+      'prepareDatabaseProgressChangeEvent',
+      e => {
+      console.log(e["msg"]);
+      this.setState({fullName: e["msg"]});
+      }
+    );
     var licPath = Platform.OS === 'ios' ? (RNFS.MainBundlePath + "/regula.license") : "regula.license";
     var readFile = Platform.OS === 'ios' ? RNFS.readFile : RNFS.readFileAssets;
     RNRegulaDocumentReader.prepareDataBase("Full", (respond) => {
       console.log(respond);
       readFile(licPath, 'base64').then((res) => {
+		this.setState({fullName: "Initializing..."});
         RNRegulaDocumentReader.initialize({
           licenseKey: res
         }, (respond) => {
@@ -61,13 +66,20 @@ export default class App extends Component {
               this.state.scenarios.splice(todelete[i], 1);
             }
             this.forceUpdate();
+            RNRegulaDocumentReader.getDocumentReaderIsReady((isReady)=>{
+              if(isReady === true || isReady === "YES"){
+                this.setState({fullName: "Ready"});
+            }else{
+              this.setState({fullName: "Failed"});
+            }
+            });
           });
         })
       });
-    });
+  });
 
     this.state = {
-      fullName: "Surname and given names",
+      fullName: "Please wait...",
       doRfid: false,
       canRfid: false,
       canRfidTitle: '(unavailable)',
