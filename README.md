@@ -1,4 +1,5 @@
 # react-native-document-reader-example-demo
+
 ## Building sample project
 ```
 react-native init MySample
@@ -10,20 +11,6 @@ npm install react-native-radio-buttons-group --save
 npm install react-native-image-picker --save
 react-native link
 ```
-
-## Installation:
-
-`react-native init MyAwesomeProject`
-
-`cd MyAwesomeProject`
-
-`npm install react-native-document-reader-api --save`
-
-`npm install react-native-document-reader-core-NAMEOFCORE --save` Names of cores can be found at ...
-
-`npm install react-native-fs --save` (optional, used to load license file from file system)
-
-`react-native link`
 
 ### Android:
 
