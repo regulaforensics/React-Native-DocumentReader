@@ -9,7 +9,7 @@ We have provided a simple application that demonstrates the  _**API**_  calls yo
 
 - [How to build demo application](#how-to-build-demo-application)
 - [Troubleshooting license issues](#troubleshooting-license-issues)
-- [npm packages](npm-packages)
+- [npm packages](#npm-packages)
 
 ## How to build demo application
 1. Get trial license for demo application at  [licensing.regulaforensics.com](https://licensing.regulaforensics.com/)  (`regula.license`  file).
