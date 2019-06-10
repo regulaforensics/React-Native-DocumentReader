@@ -39,7 +39,7 @@ maven {
 	url "http://maven.regulaforensics.com/RegulaDocumentReader/Beta"
 }
 ```
- * Change the `minSdkVersion` to `19` in `buid.gradle` (`DocumentReader/android/build.gradle`).
+ * Change the `minSdkVersion` to `19` in `build.gradle` (`DocumentReader/android/build.gradle`).
  * Go to Android Manifest (`DocumentReader/android/app/src/main/AndroidManifest.xml`) and check if the following lines have these conditions: `android:allowBackup="true"` and `android:supportsRtl="true"`. The second one is used to display RFID UI correctly.
  * Copy the license to `DocumentReader/android/app/src/main/assets`.
  * Run `react-native run-android` inside DocumentReader project folder - this is just one way to run the app. You can also run it directly from within Android Studio. **Note**: `react-native log-android` is used to view logs.
