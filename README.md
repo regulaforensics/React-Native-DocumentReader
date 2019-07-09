@@ -23,8 +23,11 @@ npm install react-native-document-reader-core-fullrfid --save
 npm install react-native-fs --save
 npm install react-native-radio-buttons-group --save
 npm install react-native-image-picker --save
-react-native link
+npm install --save-dev jetifier
+npx jetify
 ```
+
+**Note**: make sure that Metro Bundler is running. Otherwise, run `react-native start` command.
 
 4. Download or clone current repository using command  `git clone https://github.com/regulaforensics/react-native-document-reader-example-demo.git`. 
 5. Copy downloaded `images` folder to the project folder (`DocumentReader`).
