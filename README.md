@@ -23,11 +23,21 @@ npm install react-native-document-reader-core-fullrfid --save
 npm install react-native-fs --save
 npm install react-native-radio-buttons-group --save
 npm install react-native-image-picker --save
+<<<<<<< HEAD
+npm install --save-dev jetifier                 (android specific)
+npx jetify                                      (android specific)
+cd ios                                          (ios specific)
+pod install                                     (ios specific)
+```
+
+**Note**: make sure that Metro Bundler is running. Otherwise, run `react-native start` command. If it fails to start, run `git init` from Project root, then `react-native start`.
+=======
 npm install --save-dev jetifier
 npx jetify
 ```
 
 **Note**: make sure that Metro Bundler is running. Otherwise, run `react-native start` command.
+>>>>>>> d7dda3465a538be81e258ceade1489ee995c21a1
 
 4. Download or clone current repository using command  `git clone https://github.com/regulaforensics/react-native-document-reader-example-demo.git`. 
 5. Copy downloaded `images` folder to the project folder (`DocumentReader`).
@@ -50,9 +60,12 @@ maven {
 8. iOS:
   * Copy the license to `DocumentReader/ios/DocumentReader`.
   * Open project and add the license to the target.
+<<<<<<< HEAD
+=======
   * Add API and Core frameworks to the Embedded Binaries: `DocumentReader/node_modules/react-native-document-reader-api/ios/DocumentReader.framework` and `DocumentReader/node_modules/react-native-document-reader-core-fullrfid/ios/DocumentReaderCore.framework`.
   * Go to the `Build Settings` and change `Always Embed Swift Standard Libraries` to `Yes`.
   * Go to the `Build Settings` and add to `Framework Search Paths` the following: `${PROJECT_DIR}/../node_modules/react-native-document-reader-api/ios` and `${PROJECT_DIR}/../node_modules/react-native-document-reader-core-fullrfid/ios`.
+>>>>>>> d7dda3465a538be81e258ceade1489ee995c21a1
   * Add the information properties to the `Info.plist`: `Privacy - Camera Usage Description` and `Privacy - Photo Library Usage Description`. It's required in order to take a photo using camera and use photos from the gallery.
   * Run `react-native run-ios` inside DocumentReader project folder - this is just one way to run the app. You can also run it directly from within Xcode.
 
