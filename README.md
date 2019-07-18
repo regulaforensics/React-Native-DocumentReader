@@ -23,13 +23,9 @@ npm install react-native-document-reader-core-fullrfid --save
 npm install react-native-fs --save
 npm install react-native-radio-buttons-group --save
 npm install react-native-image-picker --save
-npm install --save-dev jetifier                 (android specific)
-npx jetify                                      (android specific)
-cd ios                                          (ios specific)
-pod install                                     (ios specific)
 ```
 
-**Note**: make sure that Metro Bundler is running. Otherwise, run `react-native start` command. If it fails to start, run `git init` from Project root, then `react-native start`.
+**Note**: make sure that Metro Bundler is running when you run your app. Otherwise, run `react-native start` command. If it fails to start, run `git init` from Project root, then `react-native start`.
 
 4. Download or clone current repository using command  `git clone https://github.com/regulaforensics/react-native-document-reader-example-demo.git`. 
 5. Copy downloaded `images` folder to the project folder (`DocumentReader`).
@@ -47,9 +43,11 @@ maven {
  * Change the `minSdkVersion` to `19` in `build.gradle` (`DocumentReader/android/build.gradle`).
  * Go to Android Manifest (`DocumentReader/android/app/src/main/AndroidManifest.xml`) and check if the following lines have these conditions: `android:allowBackup="true"` and `android:supportsRtl="true"`. The second one is used to display RFID UI correctly.
  * Copy the license to `DocumentReader/android/app/src/main/assets`.
- * Run `react-native run-android` inside DocumentReader project folder - this is just one way to run the app. You can also run it directly from within Android Studio. **Note**: `react-native log-android` is used to view logs.
+ * Run `npx react-native run-android` inside DocumentReader project folder - this is just one way to run the app. You can also run it directly from within Android Studio. **Note**: `react-native log-android` is used to view logs.
 
 8. iOS:
+  * `cd ios`
+  * `pod install`
   * Copy the license to `DocumentReader/ios/DocumentReader`.
   * Open project and add the license to the target.
   * Add the information properties to the `Info.plist`: `Privacy - Camera Usage Description` and `Privacy - Photo Library Usage Description`. It's required in order to take a photo using camera and use photos from the gallery.
