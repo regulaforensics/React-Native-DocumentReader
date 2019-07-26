@@ -7,6 +7,7 @@ import ImagePicker from 'react-native-image-picker';
 var RNRegulaDocumentReader = Regula.RNRegulaDocumentReader;
 var DocumentReaderResults = Regula.DocumentReaderResults;
 var Enum = Regula.Enum;
+var Scenario = Regula.Scenario;
 
 const eventManager = new NativeEventEmitter(RNRegulaDocumentReader);
 
@@ -23,11 +24,11 @@ export default class App extends Component {
     );
     var licPath = Platform.OS === 'ios' ? (RNFS.MainBundlePath + "/regula.license") : "regula.license";
     var readFile = Platform.OS === 'ios' ? RNFS.readFile : RNFS.readFileAssets;
-    RNRegulaDocumentReader.prepareDataBase("Full", (respond) => {
+    RNRegulaDocumentReader.prepareDatabase("Full", (respond) => {
       console.log(respond);
       readFile(licPath, 'base64').then((res) => {
 		this.setState({fullName: "Initializing..."});
-        RNRegulaDocumentReader.initialize({
+        RNRegulaDocumentReader.initializeReader({
           licenseKey: res
         }, (respond) => {
           console.log(respond);
@@ -42,7 +43,7 @@ export default class App extends Component {
             var scenarios = [];
             for (var i in scenariosTemp) {
               scenarios.push({
-                label: scenariosTemp[i],
+                label: Scenario.fromJson(typeof scenariosTemp[i] === "string" ? JSON.parse(scenariosTemp[i]) : scenariosTemp[i]).name,
                 value: i
               });
             }
