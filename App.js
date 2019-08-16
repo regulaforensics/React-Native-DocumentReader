@@ -220,16 +220,16 @@ export default class App extends Component {
       if (accessKey != null && accessKey != "") {
         accessKey = accessKey.replace(/^/g, '').replace(/\n/g, '');
         RNRegulaDocumentReader.setRfidScenario({
-          mrz: accessKey,
-          pacePasswordType: 1,
+          mMrz: accessKey,
+          mPacePasswordType: 1,
         }, () => { });
       } else {
         accessKey = null;
         accessKey = results.getTextFieldValueByType(159);
         if (accessKey != null && accessKey != "") {
           RNRegulaDocumentReader.setRfidScenario({
-            password: accessKey,
-            pacePasswordType: 2,
+            mPassword: accessKey,
+            mPacePasswordType: 2,
           }, () => { });
         }
       }
