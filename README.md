@@ -7,9 +7,11 @@ You can use native camera to scan the documents or image from gallery for extrac
 
 We have provided a simple application that demonstrates the  _**API**_  calls you can use to interact with the DocumentReader Library.
 
-- [How to build demo application](#how-to-build-demo-application)
-- [Troubleshooting license issues](#troubleshooting-license-issues)
-- [npm packages](#npm-packages)
+# Content
+* [How to build demo application](#how-to-build-demo-application)
+* [Troubleshooting license issues](#troubleshooting-license-issues)
+* [Documentation](#documentation)
+* [npm packages](#npm-packages)
 
 ## How to build demo application
 1. Get a trial license for demo application at  [licensing.regulaforensics.com](https://licensing.regulaforensics.com/)  (`regula.license`  file).
@@ -62,6 +64,9 @@ If you have issues with license verification when running the application, pleas
 4.  You are using the latest release version of the SDK.
 5.  You placed the  `license` into the correct folder as described here [How to build demo application](#how-to-build-demo-application) (`DocumentReader/android/app/src/main/assets`  or  `DocumentReader/iOS`  folder).
 6.  You placed the  `db.dat`  into the correct folder as described here [How to build demo application](#how-to-build-demo-application) (`DocumentReader/app/src/main/assets`  or  `DocumentReader/iOS`  folder).
+
+## Documentation
+You can find documentation on API [here](https://docs.regulaforensics.com/react-native).
 
 ## npm packages
 You can find all available packages for React-Native [here](https://www.npmjs.com/~regula).
