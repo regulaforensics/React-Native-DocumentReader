@@ -4,11 +4,11 @@ Regula Document Reader SDK allows you to read various kinds of identification do
 
 You can use native camera to scan the documents or image from gallery for extract all data from it.
 
-We have provided a simple application that demonstrates the  _**API**_  calls you can use to interact with the DocumentReader Library.
+We have provided a simple application that demonstrates the  _**API**_  calls you can use to interact with the Document Reader Library.
 
 # Content
 * [How to build demo application](#how-to-build-demo-application)
-* [How to add DocumentReader library to your project](#how-to-add-documentreader-to-your-project)
+* [How to add Document Reader library to your project](#how-to-add-document-reader-to-your-project)
 * [Troubleshooting license issues](#troubleshooting-license-issues)
 * [Documentation](#documentation)
 * [Additional information](#additional-information)
@@ -35,58 +35,58 @@ pod install
   * Copy the `regula.license` file to the `DocumentReader/ios/DocumentReader` folder.
   * Run `react-native run-ios` inside `DocumentReader` folder - this is just one way to run the app. You can also run it directly from within Xcode.
 
-## How to add DocumentReader to your project
+## How to add Document Reader to your project
 Document Reader libraries are available on [npm](https://www.npmjs.com/~regula).
 First of all, install API library, simply running the following command:
 ```
-npm install react-native-document-reader-api-beta@5.0.4
+npm install react-native-document-reader-api
 ```
 
 And then add one of the Core libraries depend on the functionality that you wish and the license capabilities:
 
 * Install **bounds** library edition:
 ```
-npm install react-native-document-reader-core-bounds-beta --save
+npm install react-native-document-reader-core-bounds
 ```
 
 * Install **mrz** library edition:
 ```
-npm install react-native-document-reader-core-mrz-beta --save
+npm install react-native-document-reader-core-mrz
 ```
 
 * Install **mrzrfid** library edition:
 ```
-npm install react-native-document-reader-core-mrzrfid-beta --save
+npm install react-native-document-reader-core-mrzrfid
 ```
 
 * Install **barcode** library edition:
 ```
-npm install react-native-document-reader-core-barcode-beta --save
+npm install react-native-document-reader-core-barcode
 ```
 
 * Install **barcodemrz** library edition:
 ```
-npm install react-native-document-reader-core-barcodemrz-beta --save
+npm install react-native-document-reader-core-barcodemrz
 ```
 
 * Install **doctype** library edition:
 ```
-npm install react-native-document-reader-core-doctype-beta --save
+npm install react-native-document-reader-core-doctype
 ```
 
 * Install **ocrandmrz** library edition:
 ```
-npm install react-native-document-reader-core-ocrandmrz-beta --save
+npm install react-native-document-reader-core-ocrandmrz
 ```
 
 * Install **full** library edition:
 ```
-npm install react-native-document-reader-core-full-beta --save
+npm install react-native-document-reader-core-full
 ```
 
 * Install **fullrfid** library edition:
 ```
-npm install react-native-document-reader-core-fullrfid-beta --save
+npm install react-native-document-reader-core-fullrfid
 ```
 
 ## Troubleshooting license issues
