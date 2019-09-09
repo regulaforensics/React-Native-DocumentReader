@@ -200,13 +200,13 @@ export default class App extends Component {
   }
 
   displayResults(results) {
-    this.setState({ fullName: results.getTextFieldValueByType(25) });
+    this.setState({ fullName: results.getTextFieldValueByType(Enum.eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES) });
     if (results.getGraphicFieldImageByType(207) != null) {
-      var base64DocFront = "data:image/png;base64," + results.getGraphicFieldImageByType(207);
+      var base64DocFront = "data:image/png;base64," + results.getGraphicFieldImageByType(Enum.eGraphicFieldType.GF_DOCUMENT_IMAGE);
       this.setState({ docFront: { uri: base64DocFront } });
     }
     if (results.getGraphicFieldImageByType(201) != null) {
-      var base64Portrait = "data:image/png;base64," + results.getGraphicFieldImageByType(201);
+      var base64Portrait = "data:image/png;base64," + results.getGraphicFieldImageByType(Enum.eGraphicFieldType.GF_PORTRAIT);
       this.setState({ portrait: { uri: base64Portrait } });
     }
     //this.logResults(results);
@@ -216,12 +216,12 @@ export default class App extends Component {
     var results = DocumentReaderResults.fromJson(JSON.parse(jstring));
     if (this.state.doRfid && results != null && results.chipPage != 0) {
       accessKey = null;
-      accessKey = results.getTextFieldValueByType(51);
+      accessKey = results.getTextFieldValueByType(Enum.eVisualFieldType.FT_MRZ_STRINGS);
       if (accessKey != null && accessKey != "") {
         accessKey = accessKey.replace(/^/g, '').replace(/\n/g, '');
         RNRegulaDocumentReader.setRfidScenario({
           mMrz: accessKey,
-          mPacePasswordType: 1,
+          mPacePasswordType: Enum.eRFID_Password_Type.PPT_MRZ,
         }, () => { });
       } else {
         accessKey = null;
@@ -229,7 +229,7 @@ export default class App extends Component {
         if (accessKey != null && accessKey != "") {
           RNRegulaDocumentReader.setRfidScenario({
             mPassword: accessKey,
-            mPacePasswordType: 2,
+            mPacePasswordType: Enum.eRFID_Password_Type.PPT_CAN,
           }, () => { });
         }
       }
