@@ -4,12 +4,8 @@ import Regula from 'react-native-document-reader-api-beta';
 import * as RNFS from 'react-native-fs';
 import RadioGroup from 'react-native-radio-buttons-group';
 import ImagePicker from 'react-native-image-picker';
-var RNRegulaDocumentReader = Regula.RNRegulaDocumentReader;
-var DocumentReaderResults = Regula.DocumentReaderResults;
-var Enum = Regula.Enum;
-var Scenario = Regula.Scenario;
 
-const eventManager = new NativeEventEmitter(RNRegulaDocumentReader);
+const eventManager = new NativeEventEmitter(Regula.RNRegulaDocumentReader);
 
 export default class App extends Component {
 
@@ -24,26 +20,26 @@ export default class App extends Component {
     );
     var licPath = Platform.OS === 'ios' ? (RNFS.MainBundlePath + "/regula.license") : "regula.license";
     var readFile = Platform.OS === 'ios' ? RNFS.readFile : RNFS.readFileAssets;
-    RNRegulaDocumentReader.prepareDatabase("Full", (respond) => {
+    Regula.RNRegulaDocumentReader.prepareDatabase("Full", (respond) => {
       console.log(respond);
       readFile(licPath, 'base64').then((res) => {
 		this.setState({fullName: "Initializing..."});
-        RNRegulaDocumentReader.initializeReader({
+        Regula.RNRegulaDocumentReader.initializeReader({
           licenseKey: res
         }, (respond) => {
           console.log(respond);
-          RNRegulaDocumentReader.getCanRFID((canRfid)=>{
+          Regula.RNRegulaDocumentReader.getCanRFID((canRfid)=>{
             if(canRfid){
               this.setState({canRfid: true});
               this.setState({canRfidTitle: ''});
             }
           });
-          RNRegulaDocumentReader.getAvailableScenarios((jstring) => {
+          Regula.RNRegulaDocumentReader.getAvailableScenarios((jstring) => {
             var scenariosTemp = JSON.parse(jstring);
             var scenarios = [];
             for (var i in scenariosTemp) {
               scenarios.push({
-                label: Scenario.fromJson(typeof scenariosTemp[i] === "string" ? JSON.parse(scenariosTemp[i]) : scenariosTemp[i]).name,
+                label: Regula.Scenario.fromJson(typeof scenariosTemp[i] === "string" ? JSON.parse(scenariosTemp[i]) : scenariosTemp[i]).name,
                 value: i
               });
             }
@@ -67,7 +63,7 @@ export default class App extends Component {
               this.state.scenarios.splice(todelete[i], 1);
             }
             this.forceUpdate();
-            RNRegulaDocumentReader.getDocumentReaderIsReady((isReady)=>{
+            Regula.RNRegulaDocumentReader.getDocumentReaderIsReady((isReady)=>{
               if(isReady === true || isReady === "YES"){
                 this.setState({fullName: "Ready"});
             }else{
@@ -200,42 +196,42 @@ export default class App extends Component {
   }
 
   displayResults(results) {
-    this.setState({ fullName: results.getTextFieldValueByType(Enum.eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES) });
+    this.setState({ fullName: results.getTextFieldValueByType(Regula.Enum.eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES) });
     if (results.getGraphicFieldImageByType(207) != null) {
-      var base64DocFront = "data:image/png;base64," + results.getGraphicFieldImageByType(Enum.eGraphicFieldType.GF_DOCUMENT_IMAGE);
+      var base64DocFront = "data:image/png;base64," + results.getGraphicFieldImageByType(Regula.Enum.eGraphicFieldType.GF_DOCUMENT_IMAGE);
       this.setState({ docFront: { uri: base64DocFront } });
     }
     if (results.getGraphicFieldImageByType(201) != null) {
-      var base64Portrait = "data:image/png;base64," + results.getGraphicFieldImageByType(Enum.eGraphicFieldType.GF_PORTRAIT);
+      var base64Portrait = "data:image/png;base64," + results.getGraphicFieldImageByType(Regula.Enum.eGraphicFieldType.GF_PORTRAIT);
       this.setState({ portrait: { uri: base64Portrait } });
     }
     //this.logResults(results);
   }
 
   handleResults(jstring) {
-    var results = DocumentReaderResults.fromJson(JSON.parse(jstring));
+    var results = Regula.DocumentReaderResults.fromJson(JSON.parse(jstring));
     if (this.state.doRfid && results != null && results.chipPage != 0) {
       accessKey = null;
-      accessKey = results.getTextFieldValueByType(Enum.eVisualFieldType.FT_MRZ_STRINGS);
+      accessKey = results.getTextFieldValueByType(Regula.Enum.eVisualFieldType.FT_MRZ_STRINGS);
       if (accessKey != null && accessKey != "") {
         accessKey = accessKey.replace(/^/g, '').replace(/\n/g, '');
-        RNRegulaDocumentReader.setRfidScenario({
-          mMrz: accessKey,
-          mPacePasswordType: Enum.eRFID_Password_Type.PPT_MRZ,
+        Regula.RNRegulaDocumentReader.setRfidScenario({
+          mrz: accessKey,
+          pacePasswordType: Regula.Enum.eRFID_Password_Type.PPT_MRZ,
         }, () => { });
       } else {
         accessKey = null;
         accessKey = results.getTextFieldValueByType(159);
         if (accessKey != null && accessKey != "") {
-          RNRegulaDocumentReader.setRfidScenario({
-            mPassword: accessKey,
-            mPacePasswordType: Enum.eRFID_Password_Type.PPT_CAN,
+          Regula.RNRegulaDocumentReader.setRfidScenario({
+            password: accessKey,
+            pacePasswordType: Regula.Enum.eRFID_Password_Type.PPT_CAN,
           }, () => { });
         }
       }
-      RNRegulaDocumentReader.startRFIDReader((jstring) => {
+      Regula.RNRegulaDocumentReader.startRFIDReader((jstring) => {
         if (jstring.substring(0, 8) == "Success:")
-          this.displayResults(DocumentReaderResults.fromJson(JSON.parse(jstring.substring(8))));
+          this.displayResults(Regula.DocumentReaderResults.fromJson(JSON.parse(jstring.substring(8))));
         else
           console.log(jstring);
       });
@@ -327,7 +323,7 @@ export default class App extends Component {
         <View style={{ flexDirection: 'row' }}>
           <Button
             onPress={() => {
-              RNRegulaDocumentReader.setConfig( {
+              Regula.RNRegulaDocumentReader.setConfig( {
                 functionality: {
                   videoCaptureMotionControl: true,
                   showCaptureButton: true
@@ -341,7 +337,7 @@ export default class App extends Component {
                   doRfid: this.state.doRfid,
                 },
               },(str)=>{console.log(str)});
-              RNRegulaDocumentReader.showScanner(
+              Regula.RNRegulaDocumentReader.showScanner(
                 (jstring) => {
                   if (jstring.substring(0, 8) == "Success:")
                     this.handleResults(jstring.substring(8));
@@ -360,7 +356,7 @@ export default class App extends Component {
                 } else if (response.error) {
                   console.log('ImagePicker Error: ', response.error);
                 } else if (response.customButton) { } else {
-                  RNRegulaDocumentReader.setConfig( {
+                  Regula.RNRegulaDocumentReader.setConfig( {
                     functionality: {
                       videoCaptureMotionControl: true,
                       showCaptureButton: true
@@ -374,7 +370,7 @@ export default class App extends Component {
                       doRfid: this.state.doRfid,
                     },
                   },(str)=>{console.log(str)});
-                  RNRegulaDocumentReader.recognizeImage(
+                  Regula.RNRegulaDocumentReader.recognizeImage(
                     response.data,
                     (jstring) => {
                       if (jstring.substring(0, 8) == "Success:")
