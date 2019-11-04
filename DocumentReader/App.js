@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Button, Text, Image, CheckBox, ScrollView, NativeEventEmitter, Platform } from 'react-native';
-import Regula from 'react-native-document-reader-api-beta';
+import Regula from 'react-native-document-reader-api';
 import * as RNFS from 'react-native-fs';
 import RadioGroup from 'react-native-radio-buttons-group';
 import ImagePicker from 'react-native-image-picker';
