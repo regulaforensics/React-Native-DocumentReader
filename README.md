@@ -18,10 +18,10 @@ We have provided a simple application that demonstrates the  _**API**_  calls yo
 2. Download or clone current repository using the command `git clone https://github.com/regulaforensics/React-Native-DocumentReader.git`.
 3. Run the following commands in Terminal:
 ```bash
-cd DocumentReader
-npm install
-cd ios
-pod install
+$ cd DocumentReader
+$ npm install
+$ cd ios
+$ pod install
 ```
 
 **Note**: make sure that Metro Bundler is running when you run your app. Otherwise, run `react-native start` command. If it fails to start, run `git init` from Project root, then `react-native start`.
@@ -39,54 +39,54 @@ pod install
 Document Reader libraries are available on [npm](https://www.npmjs.com/~regula).
 First of all, install API library, simply running the following command:
 ```
-npm install react-native-document-reader-api
+$ npm install react-native-document-reader-api
 ```
 
 And then add one of the Core libraries depend on the functionality that you wish and the license capabilities:
 
 * Install **bounds** library edition:
 ```
-npm install react-native-document-reader-core-bounds
+$ npm install react-native-document-reader-core-bounds
 ```
 
 * Install **mrz** library edition:
 ```
-npm install react-native-document-reader-core-mrz
+$ npm install react-native-document-reader-core-mrz
 ```
 
 * Install **mrzrfid** library edition:
 ```
-npm install react-native-document-reader-core-mrzrfid
+$ npm install react-native-document-reader-core-mrzrfid
 ```
 
 * Install **barcode** library edition:
 ```
-npm install react-native-document-reader-core-barcode
+$ npm install react-native-document-reader-core-barcode
 ```
 
 * Install **barcodemrz** library edition:
 ```
-npm install react-native-document-reader-core-barcodemrz
+$ npm install react-native-document-reader-core-barcodemrz
 ```
 
 * Install **doctype** library edition:
 ```
-npm install react-native-document-reader-core-doctype
+$ npm install react-native-document-reader-core-doctype
 ```
 
 * Install **ocrandmrz** library edition:
 ```
-npm install react-native-document-reader-core-ocrandmrz
+$ npm install react-native-document-reader-core-ocrandmrz
 ```
 
 * Install **full** library edition:
 ```
-npm install react-native-document-reader-core-full
+$ npm install react-native-document-reader-core-full
 ```
 
 * Install **fullrfid** library edition:
 ```
-npm install react-native-document-reader-core-fullrfid
+$ npm install react-native-document-reader-core-fullrfid
 ```
 
 ## Troubleshooting license issues
