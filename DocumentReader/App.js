@@ -132,6 +132,10 @@ export default class App extends Component {
         {
           label: "Id3Rus",
           value: 12
+        },
+        {
+          label: "Capture",
+          value: 13
         }
       ],
       selectedScenario: "Mrz",
