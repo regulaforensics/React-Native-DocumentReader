@@ -24,7 +24,7 @@ $ cd ios
 $ pod install
 ```
 
-**Note**: make sure that Metro Bundler is running when you run your app. Otherwise, run `react-native start` command. If it fails to start, run `git init` from Project root, then `react-native start`.
+**Note**: make sure that Metro Bundler is running when you run your app. Otherwise, run `npx react-native start` command. If it fails to start, run `git init` from Project root, then `npx react-native start`.
 
 
 4. Android:
