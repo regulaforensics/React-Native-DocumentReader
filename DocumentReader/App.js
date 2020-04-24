@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Button, Text, Image, CheckBox, ScrollView, NativeEventEmitter, Platform } from 'react-native';
+import { StyleSheet, View, Button, Text, Image, ScrollView, NativeEventEmitter, Platform } from 'react-native';
 import Regula from 'react-native-document-reader-api';
 import * as RNFS from 'react-native-fs';
 import RadioGroup from 'react-native-radio-buttons-group';
 import ImagePicker from 'react-native-image-picker';
+import CheckBox from 'react-native-check-box';
 
 const eventManager = new NativeEventEmitter(Regula.RNRegulaDocumentReader);
 
@@ -308,18 +309,15 @@ export default class App extends Component {
 
         <View style={{ flexDirection: 'row', padding: 5}}>
           <CheckBox
-            title='Click Here'
-            value={this.state.doRfid}
-            onChange={() => {
+            isChecked={this.state.doRfid}
+            onClick={() => {
               if(this.state.canRfid){
                 this.setState({ doRfid: !this.state.doRfid })
               }
             }}
             disabled={!this.state.canRfid}
           />
-          <Text style={{
-            padding: 5,
-          }}>
+          <Text style={{padding: 5}}>
             {'Process rfid reading'+this.state.canRfidTitle}
         </Text>
         </View>
