@@ -26,6 +26,7 @@
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = DocumentReader/main.m; sourceTree = "<group>"; };
 		46C3DCC59373D697D5B31ACC /* libPods-DocumentReader-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-DocumentReader-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		65A0429BFC5FB28AB6CFCA42 /* libPods-DocumentReader.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-DocumentReader.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7ADD29D724601FD500E9A6DB /* DocumentReader.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = DocumentReader.entitlements; path = DocumentReader/DocumentReader.entitlements; sourceTree = "<group>"; };
 		B6867BAD48803C7F1F7BAE0A /* Pods-DocumentReader.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DocumentReader.release.xcconfig"; path = "Target Support Files/Pods-DocumentReader/Pods-DocumentReader.release.xcconfig"; sourceTree = "<group>"; };
 		C69CC104B98DB8EBC3F45837 /* Pods-DocumentReader.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DocumentReader.debug.xcconfig"; path = "Target Support Files/Pods-DocumentReader/Pods-DocumentReader.debug.xcconfig"; sourceTree = "<group>"; };
 		E2E57C0F60D45F282EAF8C54 /* libPods-DocumentReaderTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-DocumentReaderTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -50,6 +51,7 @@
 		13B07FAE1A68108700A75B9A /* DocumentReader */ = {
 			isa = PBXGroup;
 			children = (
+				7ADD29D724601FD500E9A6DB /* DocumentReader.entitlements */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB71A68108700A75B9A /* main.m */,
@@ -265,6 +267,7 @@
 			baseConfigurationReference = C69CC104B98DB8EBC3F45837 /* Pods-DocumentReader.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = DocumentReader/DocumentReader.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				INFOPLIST_FILE = DocumentReader/Info.plist;
@@ -286,6 +289,7 @@
 			baseConfigurationReference = B6867BAD48803C7F1F7BAE0A /* Pods-DocumentReader.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = DocumentReader/DocumentReader.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				INFOPLIST_FILE = DocumentReader/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

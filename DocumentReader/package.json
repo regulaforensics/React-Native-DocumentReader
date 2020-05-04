@@ -11,8 +11,8 @@
     "react": "16.8.6",
     "react-native": "0.60.5",
     "react-native-check-box": "^2.1.7",
-    "react-native-document-reader-api": "^5.0.0",
-    "react-native-document-reader-core-fullrfid": "^5.0.0",
+    "react-native-document-reader-api-beta": "^5.1.5",
+    "react-native-document-reader-core-fullrfid-beta": "^5.1.2",
     "react-native-fs": "^2.14.1",
     "react-native-image-picker": "^1.1.0",
     "react-native-radio-buttons-group": "^1.0.7"
