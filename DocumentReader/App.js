@@ -85,11 +85,11 @@ export default class App extends Component {
     this.setState({ fullName: "", docFront: require('./images/id.png'), portrait: require('./images/portrait.png') });
     this.setState({ fullName: results.getTextFieldValueByType(Regula.Enum.eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES) });
     if (results.getGraphicFieldImageByType(207) != null) {
-      var base64DocFront = "data:image/jpg;base64," + results.getGraphicFieldImageByType(Regula.Enum.eGraphicFieldType.GF_DOCUMENT_IMAGE);
+      var base64DocFront = "data:image/png;base64," + results.getGraphicFieldImageByType(Regula.Enum.eGraphicFieldType.GF_DOCUMENT_IMAGE);
       this.setState({ docFront: { uri: base64DocFront } });
     }
     if (results.getGraphicFieldImageByType(201) != null) {
-      var base64Portrait = "data:image/jpg;base64," + results.getGraphicFieldImageByType(Regula.Enum.eGraphicFieldType.GF_PORTRAIT);
+      var base64Portrait = "data:image/png;base64," + results.getGraphicFieldImageByType(Regula.Enum.eGraphicFieldType.GF_PORTRAIT);
       this.setState({ portrait: { uri: base64Portrait } });
     }
   }
