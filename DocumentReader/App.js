@@ -19,6 +19,14 @@ export default class App extends Component {
         this.setState({ fullName: e["msg"] });
       }
     );
+    Regula.RNRegulaDocumentReader.setConfig(
+      {
+        processParams: {
+          scenario: "Mrz",
+        },
+      },
+      () => {}
+    );
     var licPath = Platform.OS === 'ios' ? (RNFS.MainBundlePath + "/regula.license") : "regula.license";
     var readFile = Platform.OS === 'ios' ? RNFS.readFile : RNFS.readFileAssets;
     Regula.RNRegulaDocumentReader.prepareDatabase("Full", (respond) => {
