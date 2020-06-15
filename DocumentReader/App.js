@@ -37,7 +37,7 @@ export default class App extends Component {
           licenseKey: res
         }, (respond) => {
           console.log(respond);
-          Regula.RNRegulaDocumentReader.getCanRFID((canRfid) => {
+          Regula.RNRegulaDocumentReader.isRFIDAvailableForUse((canRfid) => {
             if (canRfid) {
               this.setState({ canRfid: true });
               this.setState({ canRfidTitle: '' });
