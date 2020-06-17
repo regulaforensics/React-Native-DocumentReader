@@ -29,41 +29,43 @@ export default class App extends Component {
           licenseKey: res
         }, (respond) => {
           console.log(respond);
-          Regula.RNRegulaDocumentReader.isRFIDAvailableForUse((canRfid) => {
-            if (canRfid) {
-              this.setState({ canRfid: true });
-              this.setState({ canRfidTitle: '' });
-            }
-          });
-          Regula.RNRegulaDocumentReader.getAvailableScenarios((jstring) => {
-            var scenariosTemp = JSON.parse(jstring);
-            var scenariosL = [];
-            for (var i in scenariosTemp) {
-              scenariosL.push({
-                label: Regula.Scenario.fromJson(typeof scenariosTemp[i] === "string" ? JSON.parse(scenariosTemp[i]) : scenariosTemp[i]).name,
-                value: i
-              });
-            }
-            this.setState({ scenarios: scenariosL });
-            this.setState({ selectedScenario: this.state.scenarios[0]['label'] });
-            this.setState({ radio: null })
-            this.setState({
-              radio: <RadioGroup style={{ alignSelf: 'stretch' }} radioButtons={this.state.scenarios} onPress={(data) => {
-                var selectedItem;
-                for (var index in data)
-                  if (data[index]['selected'])
-                    selectedItem = data[index]['label'];
-                this.setState({ selectedScenario: selectedItem })
-              }} />
-            });
-            Regula.RNRegulaDocumentReader.getDocumentReaderIsReady((isReady) => {
-              if (isReady === true || isReady === "YES") {
-                this.setState({ fullName: "Ready" });
-              } else {
-                this.setState({ fullName: "Failed" });
+          if (respond == "init completed") {
+            Regula.RNRegulaDocumentReader.isRFIDAvailableForUse((canRfid) => {
+              if (canRfid) {
+                this.setState({ canRfid: true });
+                this.setState({ canRfidTitle: '' });
               }
             });
-          });
+            Regula.RNRegulaDocumentReader.getAvailableScenarios((jstring) => {
+              var scenariosTemp = JSON.parse(jstring);
+              var scenariosL = [];
+              for (var i in scenariosTemp) {
+                scenariosL.push({
+                  label: Regula.Scenario.fromJson(typeof scenariosTemp[i] === "string" ? JSON.parse(scenariosTemp[i]) : scenariosTemp[i]).name,
+                  value: i
+                });
+              }
+              this.setState({ scenarios: scenariosL });
+              this.setState({ selectedScenario: this.state.scenarios[0]['label'] });
+              this.setState({ radio: null })
+              this.setState({
+                radio: <RadioGroup style={{ alignSelf: 'stretch' }} radioButtons={this.state.scenarios} onPress={(data) => {
+                  var selectedItem;
+                  for (var index in data)
+                    if (data[index]['selected'])
+                      selectedItem = data[index]['label'];
+                  this.setState({ selectedScenario: selectedItem })
+                }} />
+              });
+              Regula.RNRegulaDocumentReader.getDocumentReaderIsReady((isReady) => {
+                if (isReady === true || isReady === "YES") {
+                  this.setState({ fullName: "Ready" });
+                } else {
+                  this.setState({ fullName: "Failed" });
+                }
+              });
+            });
+          }
         })
       });
     });
