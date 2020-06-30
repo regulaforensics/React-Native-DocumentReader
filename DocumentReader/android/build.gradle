@@ -25,9 +25,11 @@ allprojects {
         }
         maven {
             url "http://maven.regulaforensics.com/RegulaDocumentReader"
+            allowInsecureProtocol true
         }
         maven {
             url "http://maven.regulaforensics.com/RegulaDocumentReader/Beta"
+            allowInsecureProtocol true
         }
 
         google()
