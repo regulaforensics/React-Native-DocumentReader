@@ -6,7 +6,7 @@ import RadioGroup from 'react-native-radio-buttons-group';
 import ImagePicker from 'react-native-image-picker';
 import CheckBox from 'react-native-check-box';
 
-const eventManager = new NativeEventEmitter(Regula.RNRegulaDocumentReader);
+const eventManager = new NativeEventEmitter(Regula.DocumentReader);
 
 export default class App extends Component {
 
@@ -21,54 +21,49 @@ export default class App extends Component {
     );
     var licPath = Platform.OS === 'ios' ? (RNFS.MainBundlePath + "/regula.license") : "regula.license";
     var readFile = Platform.OS === 'ios' ? RNFS.readFile : RNFS.readFileAssets;
-    Regula.RNRegulaDocumentReader.prepareDatabase("Full", (respond) => {
+    Regula.DocumentReader.prepareDatabase("Full", (respond) => {
       console.log(respond);
       readFile(licPath, 'base64').then((res) => {
         this.setState({ fullName: "Initializing..." });
-        Regula.RNRegulaDocumentReader.initializeReader({
-          licenseKey: res
-        }, (respond) => {
+        Regula.DocumentReader.initializeReader(res, (respond) => {
           console.log(respond);
-          if (respond == "init completed") {
-            Regula.RNRegulaDocumentReader.isRFIDAvailableForUse((canRfid) => {
-              if (canRfid) {
-                this.setState({ canRfid: true });
-                this.setState({ canRfidTitle: '' });
-              }
-            });
-            Regula.RNRegulaDocumentReader.getAvailableScenarios((jstring) => {
-              var scenariosTemp = JSON.parse(jstring);
-              var scenariosL = [];
-              for (var i in scenariosTemp) {
-                scenariosL.push({
-                  label: Regula.Scenario.fromJson(typeof scenariosTemp[i] === "string" ? JSON.parse(scenariosTemp[i]) : scenariosTemp[i]).name,
-                  value: i
-                });
-              }
-              this.setState({ scenarios: scenariosL });
-              this.setState({ selectedScenario: this.state.scenarios[0]['label'] });
-              this.setState({ radio: null })
-              this.setState({
-                radio: <RadioGroup style={{ alignSelf: 'stretch' }} radioButtons={this.state.scenarios} onPress={(data) => {
-                  var selectedItem;
-                  for (var index in data)
-                    if (data[index]['selected'])
-                      selectedItem = data[index]['label'];
-                  this.setState({ selectedScenario: selectedItem })
-                }} />
+          Regula.DocumentReader.isRFIDAvailableForUse((canRfid) => {
+            if (canRfid === true || canRfid === "YES" || canRfid == 1) {
+              this.setState({ canRfid: true });
+              this.setState({ canRfidTitle: '' });
+            }
+          }, error => console.log(error));
+          Regula.DocumentReader.getAvailableScenarios((jstring) => {
+            var scenariosTemp = JSON.parse(jstring);
+            var scenariosL = [];
+            for (var i in scenariosTemp) {
+              scenariosL.push({
+                label: Regula.Scenario.fromJson(typeof scenariosTemp[i] === "string" ? JSON.parse(scenariosTemp[i]) : scenariosTemp[i]).name,
+                value: i
               });
-              Regula.RNRegulaDocumentReader.getDocumentReaderIsReady((isReady) => {
-                if (isReady === true || isReady === "YES") {
-                  this.setState({ fullName: "Ready" });
-                } else {
-                  this.setState({ fullName: "Failed" });
-                }
-              });
+            }
+            this.setState({ scenarios: scenariosL });
+            this.setState({ selectedScenario: this.state.scenarios[0]['label'] });
+            this.setState({ radio: null })
+            this.setState({
+              radio: <RadioGroup style={{ alignSelf: 'stretch' }} radioButtons={this.state.scenarios} onPress={(data) => {
+                var selectedItem;
+                for (var index in data)
+                  if (data[index]['selected'])
+                    selectedItem = data[index]['label'];
+                this.setState({ selectedScenario: selectedItem })
+              }} />
             });
-          }
-        })
+            Regula.DocumentReader.getDocumentReaderIsReady((isReady) => {
+              if (isReady === true || isReady === "YES" || isReady == 1)
+                this.setState({ fullName: "Ready" });
+              else
+                this.setState({ fullName: "Failed" });
+            }, error => console.log(error));
+          }, error => console.log(error));
+        }, error => console.log(error))
       });
-    });
+    }, error => console.log(error));
 
     this.state = {
       fullName: "Please wait...",
@@ -103,26 +98,21 @@ export default class App extends Component {
       accessKey = results.getTextFieldValueByType(Regula.Enum.eVisualFieldType.FT_MRZ_STRINGS);
       if (accessKey != null && accessKey != "") {
         accessKey = accessKey.replace(/^/g, '').replace(/\n/g, '');
-        Regula.RNRegulaDocumentReader.setRfidScenario({
+        Regula.DocumentReader.setRfidScenario({
           mrz: accessKey,
           pacePasswordType: Regula.Enum.eRFID_Password_Type.PPT_MRZ,
-        }, () => { });
+        }, null, error => console.log(error));
       } else {
         accessKey = null;
         accessKey = results.getTextFieldValueByType(159);
         if (accessKey != null && accessKey != "") {
-          Regula.RNRegulaDocumentReader.setRfidScenario({
+          Regula.DocumentReader.setRfidScenario({
             password: accessKey,
             pacePasswordType: Regula.Enum.eRFID_Password_Type.PPT_CAN,
-          }, () => { });
+          }, null, error => console.log(error));
         }
       }
-      Regula.RNRegulaDocumentReader.startRFIDReader((jstring) => {
-        if (jstring.substring(0, 8) == "Success:")
-          this.displayResults(Regula.DocumentReaderResults.fromJson(JSON.parse(jstring.substring(8))));
-        else
-          console.log(jstring);
-      });
+      Regula.DocumentReader.startRFIDReader(jstring => this.displayResults(Regula.DocumentReaderResults.fromJson(JSON.parse(jstring))), error => console.log(error));
     } else
       this.displayResults(results);
   }
@@ -197,7 +187,7 @@ export default class App extends Component {
         <View style={{ flexDirection: 'row' }}>
           <Button
             onPress={() => {
-              Regula.RNRegulaDocumentReader.setConfig({
+              Regula.DocumentReader.setConfig({
                 functionality: {
                   videoCaptureMotionControl: true,
                   showCaptureButton: true
@@ -210,14 +200,8 @@ export default class App extends Component {
                   scenario: this.state.selectedScenario,
                   doRfid: this.state.doRfid,
                 },
-              }, (str) => { console.log(str) });
-              Regula.RNRegulaDocumentReader.showScanner(
-                (jstring) => {
-                  if (jstring.substring(0, 8) == "Success:")
-                    this.handleResults(jstring.substring(8));
-                  else
-                    console.log(jstring);
-                });
+              }, null, error => console.log(error));
+              Regula.DocumentReader.showScanner(jstring => this.handleResults(jstring), error => console.log(error));
             }}
             title="Scan document"
           />
@@ -230,7 +214,7 @@ export default class App extends Component {
                 } else if (response.error) {
                   console.log('ImagePicker Error: ', response.error);
                 } else if (response.customButton) { } else {
-                  Regula.RNRegulaDocumentReader.setConfig({
+                  Regula.DocumentReader.setConfig({
                     functionality: {
                       videoCaptureMotionControl: true,
                       showCaptureButton: true
@@ -243,15 +227,8 @@ export default class App extends Component {
                       scenario: this.state.selectedScenario,
                       doRfid: this.state.doRfid,
                     },
-                  }, (str) => { console.log(str) });
-                  Regula.RNRegulaDocumentReader.recognizeImage(
-                    response.data,
-                    (jstring) => {
-                      if (jstring.substring(0, 8) == "Success:")
-                        this.handleResults(jstring.substring(8));
-                      else
-                        console.log(jstring);
-                    });
+                  }, null, error => console.log(error));
+                  Regula.DocumentReader.recognizeImage(response.data, jstring => this.handleResults(jstring), error => console.log(error));
                 }
               });
             }}
