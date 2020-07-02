@@ -6,7 +6,7 @@ import RadioGroup from 'react-native-radio-buttons-group';
 import ImagePicker from 'react-native-image-picker';
 import CheckBox from 'react-native-check-box';
 
-const eventManager = new NativeEventEmitter(Regula.DocumentReader);
+const eventManager = new NativeEventEmitter(Regula.RNRegulaDocumentReader);
 
 export default class App extends Component {
 
