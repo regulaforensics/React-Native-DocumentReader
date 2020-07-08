@@ -9,16 +9,9 @@ import CheckBox from 'react-native-check-box';
 const eventManager = new NativeEventEmitter(Regula.RNRegulaDocumentReader);
 
 export default class App extends Component {
-
   constructor(props) {
     super(props);
-    eventManager.addListener(
-      'prepareDatabaseProgressChangeEvent',
-      e => {
-        console.log(e["msg"]);
-        this.setState({ fullName: e["msg"] });
-      }
-    );
+    eventManager.addListener('prepareDatabaseProgressChangeEvent', e => this.setState({ fullName: e["msg"] }));
     var licPath = Platform.OS === 'ios' ? (RNFS.MainBundlePath + "/regula.license") : "regula.license";
     var readFile = Platform.OS === 'ios' ? RNFS.readFile : RNFS.readFileAssets;
     Regula.DocumentReader.prepareDatabase("Full", (respond) => {
@@ -38,7 +31,7 @@ export default class App extends Component {
             var scenariosL = [];
             for (var i in scenariosTemp) {
               scenariosL.push({
-                label: Regula.Scenario.fromJson(typeof scenariosTemp[i] === "string" ? JSON.parse(scenariosTemp[i]) : scenariosTemp[i]).name,
+                label: Regula.DocumentReader.Scenario.fromJson(typeof scenariosTemp[i] === "string" ? JSON.parse(scenariosTemp[i]) : scenariosTemp[i]).name,
                 value: i
               });
             }
@@ -61,7 +54,7 @@ export default class App extends Component {
                 this.setState({ fullName: "Failed" });
             }, error => console.log(error));
           }, error => console.log(error));
-        }, error => console.log(error))
+        }, error => console.log(error));
       });
     }, error => console.log(error));
 
@@ -80,39 +73,39 @@ export default class App extends Component {
 
   displayResults(results) {
     this.setState({ fullName: "", docFront: require('./images/id.png'), portrait: require('./images/portrait.png') });
-    this.setState({ fullName: results.getTextFieldValueByType(Regula.Enum.eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES) });
+    this.setState({ fullName: results.getTextFieldValueByType(Regula.DocumentReader.Enum.eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES) });
     if (results.getGraphicFieldImageByType(207) != null) {
-      var base64DocFront = "data:image/png;base64," + results.getGraphicFieldImageByType(Regula.Enum.eGraphicFieldType.GF_DOCUMENT_IMAGE);
+      var base64DocFront = "data:image/png;base64," + results.getGraphicFieldImageByType(Regula.DocumentReader.Enum.eGraphicFieldType.GF_DOCUMENT_IMAGE);
       this.setState({ docFront: { uri: base64DocFront } });
     }
     if (results.getGraphicFieldImageByType(201) != null) {
-      var base64Portrait = "data:image/png;base64," + results.getGraphicFieldImageByType(Regula.Enum.eGraphicFieldType.GF_PORTRAIT);
+      var base64Portrait = "data:image/png;base64," + results.getGraphicFieldImageByType(Regula.DocumentReader.Enum.eGraphicFieldType.GF_PORTRAIT);
       this.setState({ portrait: { uri: base64Portrait } });
     }
   }
 
   handleResults(jstring) {
-    var results = Regula.DocumentReaderResults.fromJson(JSON.parse(jstring));
+    var results = Regula.DocumentReader.DocumentReaderResults.fromJson(JSON.parse(jstring));
     if (this.state.doRfid && results != null && results.chipPage != 0) {
       accessKey = null;
-      accessKey = results.getTextFieldValueByType(Regula.Enum.eVisualFieldType.FT_MRZ_STRINGS);
+      accessKey = results.getTextFieldValueByType(Regula.DocumentReader.Enum.eVisualFieldType.FT_MRZ_STRINGS);
       if (accessKey != null && accessKey != "") {
         accessKey = accessKey.replace(/^/g, '').replace(/\n/g, '');
         Regula.DocumentReader.setRfidScenario({
           mrz: accessKey,
-          pacePasswordType: Regula.Enum.eRFID_Password_Type.PPT_MRZ,
-        }, null, error => console.log(error));
+          pacePasswordType: Regula.DocumentReader.Enum.eRFID_Password_Type.PPT_MRZ,
+        }, e=>{}, error => console.log(error));
       } else {
         accessKey = null;
         accessKey = results.getTextFieldValueByType(159);
         if (accessKey != null && accessKey != "") {
           Regula.DocumentReader.setRfidScenario({
             password: accessKey,
-            pacePasswordType: Regula.Enum.eRFID_Password_Type.PPT_CAN,
-          }, null, error => console.log(error));
+            pacePasswordType: Regula.DocumentReader.Enum.eRFID_Password_Type.PPT_CAN,
+          }, e => { }, error => console.log(error));
         }
       }
-      Regula.DocumentReader.startRFIDReader(jstring => this.displayResults(Regula.DocumentReaderResults.fromJson(JSON.parse(jstring))), error => console.log(error));
+      Regula.DocumentReader.startRFIDReader(s => this.handleResults(s), e => console.log(e));
     } else
       this.displayResults(results);
   }
@@ -200,8 +193,8 @@ export default class App extends Component {
                   scenario: this.state.selectedScenario,
                   doRfid: this.state.doRfid,
                 },
-              }, null, error => console.log(error));
-              Regula.DocumentReader.showScanner(jstring => this.handleResults(jstring), error => console.log(error));
+              }, e => { }, error => console.log(error));
+              Regula.DocumentReader.showScanner(s => this.handleResults(s), e => console.log(e));
             }}
             title="Scan document"
           />
@@ -227,8 +220,8 @@ export default class App extends Component {
                       scenario: this.state.selectedScenario,
                       doRfid: this.state.doRfid,
                     },
-                  }, null, error => console.log(error));
-                  Regula.DocumentReader.recognizeImage(response.data, jstring => this.handleResults(jstring), error => console.log(error));
+                  }, e => { }, error => console.log(error));
+                  Regula.DocumentReader.recognizeImage(response.data, s => this.handleResults(s), e => console.log(e));
                 }
               });
             }}
