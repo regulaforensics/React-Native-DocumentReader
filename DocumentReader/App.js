@@ -74,11 +74,11 @@ export default class App extends Component {
   displayResults(results) {
     this.setState({ fullName: "", docFront: require('./images/id.png'), portrait: require('./images/portrait.png') });
     this.setState({ fullName: results.getTextFieldValueByType(Regula.DocumentReader.Enum.eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES) });
-    if (results.getGraphicFieldImageByType(207) != null) {
+    if (results.getGraphicFieldImageByType(Regula.DocumentReader.Enum.eGraphicFieldType.GF_DOCUMENT_IMAGE) != null) {
       var base64DocFront = "data:image/png;base64," + results.getGraphicFieldImageByType(Regula.DocumentReader.Enum.eGraphicFieldType.GF_DOCUMENT_IMAGE);
       this.setState({ docFront: { uri: base64DocFront } });
     }
-    if (results.getGraphicFieldImageByType(201) != null) {
+    if (results.getGraphicFieldImageByType(Regula.DocumentReader.Enum.eGraphicFieldType.GF_PORTRAIT) != null) {
       var base64Portrait = "data:image/png;base64," + results.getGraphicFieldImageByType(Regula.DocumentReader.Enum.eGraphicFieldType.GF_PORTRAIT);
       this.setState({ portrait: { uri: base64Portrait } });
     }
@@ -105,7 +105,7 @@ export default class App extends Component {
           }, e => { }, error => console.log(error));
         }
       }
-      Regula.DocumentReader.startRFIDReader(s => this.handleResults(s), e => console.log(e));
+      Regula.DocumentReader.startRFIDReader(s => this.displayResults(Regula.DocumentReader.DocumentReaderResults.fromJson(JSON.parse(s))), e => console.log(e));
     } else
       this.displayResults(results);
   }
