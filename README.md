@@ -8,7 +8,6 @@ We have provided a simple application that demonstrates the  _**API**_  calls yo
 
 # Content
 * [How to build demo application](#how-to-build-demo-application)
-* [How to add Document Reader library to your project](#how-to-add-document-reader-to-your-project)
 * [Troubleshooting license issues](#troubleshooting-license-issues)
 * [Documentation](#documentation)
 * [Additional information](#additional-information)
@@ -34,60 +33,6 @@ $ pod install
 5. iOS:
   * Copy the `regula.license` file to the `DocumentReader/ios/DocumentReader` folder.
   * Run `react-native run-ios` inside `DocumentReader` folder - this is just one way to run the app. You can also run it directly from within Xcode.
-
-## How to add Document Reader to your project
-Document Reader libraries are available on [npm](https://www.npmjs.com/~regula).
-First of all, install API library, simply running the following command:
-```
-$ npm install react-native-document-reader-api
-```
-
-And then add one of the Core libraries depend on the functionality that you wish and the license capabilities:
-
-* Install **bounds** library edition:
-```
-$ npm install react-native-document-reader-core-bounds
-```
-
-* Install **mrz** library edition:
-```
-$ npm install react-native-document-reader-core-mrz
-```
-
-* Install **mrzrfid** library edition:
-```
-$ npm install react-native-document-reader-core-mrzrfid
-```
-
-* Install **barcode** library edition:
-```
-$ npm install react-native-document-reader-core-barcode
-```
-
-* Install **barcodemrz** library edition:
-```
-$ npm install react-native-document-reader-core-barcodemrz
-```
-
-* Install **doctype** library edition:
-```
-$ npm install react-native-document-reader-core-doctype
-```
-
-* Install **ocrandmrz** library edition:
-```
-$ npm install react-native-document-reader-core-ocrandmrz
-```
-
-* Install **full** library edition:
-```
-$ npm install react-native-document-reader-core-full
-```
-
-* Install **fullrfid** library edition:
-```
-$ npm install react-native-document-reader-core-fullrfid
-```
 
 ## Troubleshooting license issues
 If you have issues with license verification when running the application, please verify that next is true:
