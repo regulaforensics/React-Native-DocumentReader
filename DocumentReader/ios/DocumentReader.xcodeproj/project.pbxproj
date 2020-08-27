@@ -160,6 +160,8 @@
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
+				AD29BECBB6C065AA9C1645A0 /* [CP] Embed Pods Frameworks */,
+				EE013292E077B709DEC11060 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -249,6 +251,52 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		AD29BECBB6C065AA9C1645A0 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-DocumentReader/Pods-DocumentReader-frameworks.sh",
+				"${PODS_ROOT}/../../node_modules/react-native-document-reader-api/ios/DocumentReader.framework",
+				"${PODS_ROOT}/../../node_modules/react-native-document-reader-api/ios/DocumentReader.framework.dSYM",
+				"${PODS_ROOT}/../../node_modules/react-native-document-reader-api/ios/CE97E1BC-4747-3ED0-977C-B464DED733EC.bcsymbolmap",
+				"${PODS_ROOT}/../../node_modules/react-native-document-reader-api/ios/3B4A2A59-2CDE-32AD-8307-59AC1D74BACF.bcsymbolmap",
+				"${PODS_ROOT}/../../node_modules/react-native-document-reader-core-fullrfid/ios/DocumentReaderCore.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DocumentReader.framework",
+				"${DWARF_DSYM_FOLDER_PATH}/DocumentReader.framework.dSYM",
+				"${BUILT_PRODUCTS_DIR}/CE97E1BC-4747-3ED0-977C-B464DED733EC.bcsymbolmap",
+				"${BUILT_PRODUCTS_DIR}/3B4A2A59-2CDE-32AD-8307-59AC1D74BACF.bcsymbolmap",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DocumentReaderCore.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-DocumentReader/Pods-DocumentReader-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		EE013292E077B709DEC11060 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-DocumentReader/Pods-DocumentReader-resources.sh",
+				"${PODS_CONFIGURATION_BUILD_DIR}/QBImagePickerController/QBImagePicker.bundle",
+				"${PODS_ROOT}/RSKImageCropper/RSKImageCropper/RSKImageCropperStrings.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/QBImagePicker.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RSKImageCropperStrings.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-DocumentReader/Pods-DocumentReader-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {

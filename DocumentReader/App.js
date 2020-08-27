@@ -3,7 +3,7 @@ import { StyleSheet, View, Button, Text, Image, ScrollView, NativeEventEmitter, 
 import Regula from 'react-native-document-reader-api';
 import * as RNFS from 'react-native-fs';
 import RadioGroup from 'react-native-radio-buttons-group';
-import ImagePicker from 'react-native-image-picker';
+import ImagePicker from 'react-native-customized-image-picker';
 import CheckBox from 'react-native-check-box';
 
 const eventManager = new NativeEventEmitter(Regula.RNRegulaDocumentReader);
@@ -94,7 +94,7 @@ export default class App extends Component {
         Regula.DocumentReader.setRfidScenario({
           mrz: accessKey,
           pacePasswordType: Regula.DocumentReader.Enum.eRFID_Password_Type.PPT_MRZ,
-        }, e=>{}, error => console.log(error));
+        }, e => { }, error => console.log(error));
       } else {
         accessKey = null;
         accessKey = results.getTextFieldValueByType(159);
@@ -194,6 +194,7 @@ export default class App extends Component {
                   doRfid: this.state.doRfid,
                 },
               }, e => { }, error => console.log(error));
+
               Regula.DocumentReader.showScanner(s => this.handleResults(s), e => console.log(e));
             }}
             title="Scan document"
@@ -201,28 +202,34 @@ export default class App extends Component {
           <Text style={{ padding: 5 }}></Text>
           <Button
             onPress={() => {
-              ImagePicker.showImagePicker({}, (response) => {
-                if (response.didCancel) {
-                  console.log('User cancelled image picker');
-                } else if (response.error) {
-                  console.log('ImagePicker Error: ', response.error);
-                } else if (response.customButton) { } else {
-                  Regula.DocumentReader.setConfig({
-                    functionality: {
-                      videoCaptureMotionControl: true,
-                      showCaptureButton: true
-                    },
-                    customization: {
-                      showResultStatusMessages: true,
-                      showStatusMessages: true
-                    },
-                    processParams: {
-                      scenario: this.state.selectedScenario,
-                      doRfid: this.state.doRfid,
-                    },
-                  }, e => { }, error => console.log(error));
-                  Regula.DocumentReader.recognizeImage(response.data, s => this.handleResults(s), e => console.log(e));
+              ImagePicker.openPicker({
+                multiple: true,
+                includeBase64: true
+              }).then(response => {
+                Regula.DocumentReader.setConfig({
+                  functionality: {
+                    videoCaptureMotionControl: true,
+                    showCaptureButton: true
+                  },
+                  customization: {
+                    showResultStatusMessages: true,
+                    showStatusMessages: true
+                  },
+                  processParams: {
+                    scenario: this.state.selectedScenario,
+                    doRfid: this.state.doRfid,
+                  },
+                }, e => { }, error => console.log(error));
+                
+                var images = [];
+
+                for (var i = 0; i < response.length; i++) {
+                  images.push(response[i].data);
                 }
+
+                Regula.DocumentReader.recognizeImages(images, s => this.handleResults(s), e => console.log(e));
+              }).catch(e => {
+                console.log("ImagePicker: " + e);
               });
             }}
             title="     Scan image     "
