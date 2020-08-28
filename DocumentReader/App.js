@@ -21,7 +21,7 @@ export default class App extends Component {
         Regula.DocumentReader.initializeReader(res, (respond) => {
           console.log(respond);
           Regula.DocumentReader.isRFIDAvailableForUse((canRfid) => {
-            if (canRfid === true || canRfid === "YES" || canRfid == 1) {
+            if (canRfid) {
               this.setState({ canRfid: true });
               this.setState({ canRfidTitle: '' });
             }
@@ -48,7 +48,7 @@ export default class App extends Component {
               }} />
             });
             Regula.DocumentReader.getDocumentReaderIsReady((isReady) => {
-              if (isReady === true || isReady === "YES" || isReady == 1)
+              if (isReady)
                 this.setState({ fullName: "Ready" });
               else
                 this.setState({ fullName: "Failed" });
@@ -105,7 +105,7 @@ export default class App extends Component {
           }, e => { }, error => console.log(error));
         }
       }
-      Regula.DocumentReader.startRFIDReader(s => this.displayResults(Regula.DocumentReader.DocumentReaderResults.fromJson(JSON.parse(s))), e => console.log(e));
+      Regula.DocumentReader.readRFID(s => this.displayResults(Regula.DocumentReader.DocumentReaderResults.fromJson(JSON.parse(s))), e => console.log(e));
     } else
       this.displayResults(results);
   }
