@@ -12,7 +12,6 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		7AFCB96C24614DED001ADC8C /* regula.license in Resources */ = {isa = PBXBuildFile; fileRef = 7AFCB96B24614DED001ADC8C /* regula.license */; };
-		C390978D24F93726005D7B8A /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 008F07F21AC5B25A0029DE68 /* main.jsbundle */; };
 		DB4A3F8D100061EA002AC758 /* libPods-DocumentReader.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EC41147B38BC760CBB31537 /* libPods-DocumentReader.a */; };
 /* End PBXBuildFile section */
 
@@ -209,7 +208,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C390978D24F93726005D7B8A /* main.jsbundle in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				7AFCB96C24614DED001ADC8C /* regula.license in Resources */,
