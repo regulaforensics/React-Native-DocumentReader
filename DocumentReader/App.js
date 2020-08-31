@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Button, Text, Image, ScrollView, NativeEventEmitter, Platform } from 'react-native';
-import Regula from 'react-native-document-reader-api';
+import Regula from 'react-native-document-reader-api-beta';
 import * as RNFS from 'react-native-fs';
 import RadioGroup from 'react-native-radio-buttons-group';
 import ImagePicker from 'react-native-customized-image-picker';
@@ -12,8 +12,9 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     eventManager.addListener('prepareDatabaseProgressChangeEvent', e => this.setState({ fullName: e["msg"] }));
+    eventManager.addListener('completionEvent', e => this.handleCompletion(Regula.DocumentReader.DocumentReaderCompletion.fromJson(JSON.parse(e["msg"]))));
     var licPath = Platform.OS === 'ios' ? (RNFS.MainBundlePath + "/regula.license") : "regula.license";
-    var readFile = Platform.OS === 'ios' ? RNFS.readFile : RNFS.readFileAssets;
+    var readFile = Platform.OS === 'ios' ? RNFS.readFile : RNFS.readFileAssets; 
     Regula.DocumentReader.prepareDatabase("Full", (respond) => {
       console.log(respond);
       readFile(licPath, 'base64').then((res) => {
@@ -71,6 +72,35 @@ export default class App extends Component {
     };
   }
 
+  handleCompletion(completion) {
+    console.log("action code: " + completion.action)
+    if (completion.action == Regula.DocumentReader.Enum.DocReaderAction.COMPLETE)
+      this.handleResults(completion.results)
+    if (completion.action == Regula.DocumentReader.Enum.DocReaderAction.CANCEL)
+      console.log("scanning canceled")
+    if (completion.action == Regula.DocumentReader.Enum.DocReaderAction.ERROR)
+      console.log("Error: " + completion.error.toString)
+    if (completion.action == Regula.DocumentReader.Enum.DocReaderAction.COMPLETE || Regula.DocumentReader.Enum.DocReaderAction.CANCEL || Regula.DocumentReader.Enum.DocReaderAction.ERROR)
+      this.hideRfidUI()
+    if (completion.action == Regula.DocumentReader.Enum.DocReaderAction.NOTIFICATION && this.state.isReadingRfid)
+      updateRfidUI(completion.results)
+  }
+
+  showRfidUI() {
+    // show animation
+    console.log("displaying rfid ui")
+    this.setState({ isReadingRfid: true });
+  }
+
+  hideRfidUI() {
+    // show animation
+    this.setState({ isReadingRfid: false });
+  }
+
+  updateRfidUI(results) {
+    // update progress bar
+  }
+
   displayResults(results) {
     this.setState({ fullName: "", docFront: require('./images/id.png'), portrait: require('./images/portrait.png') });
     this.setState({ fullName: results.getTextFieldValueByType(Regula.DocumentReader.Enum.eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES) });
@@ -84,8 +114,7 @@ export default class App extends Component {
     }
   }
 
-  handleResults(jstring) {
-    var results = Regula.DocumentReader.DocumentReaderResults.fromJson(JSON.parse(jstring));
+  handleResults(results) {
     if (this.state.doRfid && results != null && results.chipPage != 0) {
       accessKey = null;
       accessKey = results.getTextFieldValueByType(Regula.DocumentReader.Enum.eVisualFieldType.FT_MRZ_STRINGS);
@@ -94,7 +123,7 @@ export default class App extends Component {
         Regula.DocumentReader.setRfidScenario({
           mrz: accessKey,
           pacePasswordType: Regula.DocumentReader.Enum.eRFID_Password_Type.PPT_MRZ,
-        }, e => { }, error => console.log(error));
+        }, e => { this.showRfidUI() }, error => console.log(error));
       } else {
         accessKey = null;
         accessKey = results.getTextFieldValueByType(159);
@@ -102,10 +131,11 @@ export default class App extends Component {
           Regula.DocumentReader.setRfidScenario({
             password: accessKey,
             pacePasswordType: Regula.DocumentReader.Enum.eRFID_Password_Type.PPT_CAN,
-          }, e => { }, error => console.log(error));
+          }, e => { this.showRfidUI()  }, error => console.log(error));
         }
       }
-      Regula.DocumentReader.readRFID(s => this.displayResults(Regula.DocumentReader.DocumentReaderResults.fromJson(JSON.parse(s))), e => console.log(e));
+      Regula.DocumentReader.readRFID(m => { }, e => console.log(e));
+
     } else
       this.displayResults(results);
   }
@@ -113,99 +143,83 @@ export default class App extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={{
-          top: 1,
-          left: 1,
-          padding: 30,
-          fontSize: 20,
-        }}>
-          {this.state.fullName}
-        </Text>
-        <View style={{ flexDirection: "row", padding: 5 }}>
-          <View style={{ flexDirection: "column", alignItems: "center" }}>
-            <Text style={{
-              top: 1,
-              right: 1,
-              padding: 5,
-            }}>
-              Portrait
-        </Text>
-            <Image
-              style={{
-                height: 150,
-                width: 150,
-              }}
-              source={this.state.portrait}
-              resizeMode="contain"
-            />
-          </View>
-          <View style={{ flexDirection: "column", alignItems: "center", padding: 5 }}>
-            <Text style={{
-              top: 1,
-              right: 1,
-              padding: 5,
-            }}>
-              Document image
-        </Text>
-            <Image
-              style={{
-                height: 150,
-                width: 200,
-              }}
-              source={this.state.docFront}
-              resizeMode="contain"
-            />
-          </View>
-        </View>
-
-        <ScrollView style={{ padding: 5, alignSelf: 'stretch' }}>
-          {this.state.radio}
-        </ScrollView>
-
-        <View style={{ flexDirection: 'row', padding: 5 }}>
-          <CheckBox
-            isChecked={this.state.doRfid}
-            onClick={() => {
-              if (this.state.canRfid) {
-                this.setState({ doRfid: !this.state.doRfid })
-              }
-            }}
-            disabled={!this.state.canRfid}
-          />
-          <Text style={{ padding: 5 }}>
-            {'Process rfid reading' + this.state.canRfidTitle}
+        {this.state.isReadingRfid && <Text style={{
+            top: 1,
+            left: 1,
+            padding: 30,
+            fontSize: 20,
+          }}>
+            Reading RFID
           </Text>
-        </View>
+        }
+        { !this.state.isReadingRfid && <View style={styles.container}>
+          <Text style={{
+            top: 1,
+            left: 1,
+            padding: 30,
+            fontSize: 20,
+          }}>
+            {this.state.fullName}
+          </Text>
+          <View style={{ flexDirection: "row", padding: 5 }}>
+            <View style={{ flexDirection: "column", alignItems: "center" }}>
+              <Text style={{
+                top: 1,
+                right: 1,
+                padding: 5,
+              }}>
+                Portrait
+        </Text>
+              <Image
+                style={{
+                  height: 150,
+                  width: 150,
+                }}
+                source={this.state.portrait}
+                resizeMode="contain"
+              />
+            </View>
+            <View style={{ flexDirection: "column", alignItems: "center", padding: 5 }}>
+              <Text style={{
+                top: 1,
+                right: 1,
+                padding: 5,
+              }}>
+                Document image
+        </Text>
+              <Image
+                style={{
+                  height: 150,
+                  width: 200,
+                }}
+                source={this.state.docFront}
+                resizeMode="contain"
+              />
+            </View>
+          </View>
 
-        <View style={{ flexDirection: 'row' }}>
-          <Button
-            onPress={() => {
-              Regula.DocumentReader.setConfig({
-                functionality: {
-                  videoCaptureMotionControl: true,
-                  showCaptureButton: true
-                },
-                customization: {
-                  showResultStatusMessages: true,
-                  showStatusMessages: true
-                },
-                processParams: {
-                  scenario: this.state.selectedScenario,
-                  doRfid: this.state.doRfid,
-                },
-              }, e => { }, error => console.log(error));
+          <ScrollView style={{ padding: 5, alignSelf: 'stretch' }}>
+            {this.state.radio}
+          </ScrollView>
 
-              Regula.DocumentReader.showScanner(s => this.handleResults(s), e => console.log(e));
-            }}
-            title="Scan document"
-          />
-          <Text style={{ padding: 5 }}></Text>
-          <Button
-            onPress={() => {
-              ImagePicker.openPicker({
-                multiple: true,
-                includeBase64: true
-              }).then(response => {
+          <View style={{ flexDirection: 'row', padding: 5 }}>
+            <CheckBox
+              isChecked={this.state.doRfid}
+              onClick={() => {
+                if (this.state.canRfid) {
+                  this.setState({ doRfid: !this.state.doRfid })
+                }
+              }}
+              disabled={!this.state.canRfid}
+            />
+            <Text style={{ padding: 5 }}>
+              {'Process rfid reading' + this.state.canRfidTitle}
+            </Text>
+          </View>
+
+          <View style={{ flexDirection: 'row' }}>
+            <Button
+              onPress={() => {
                 Regula.DocumentReader.setConfig({
                   functionality: {
                     videoCaptureMotionControl: true,
@@ -220,21 +234,49 @@ export default class App extends Component {
                     doRfid: this.state.doRfid,
                   },
                 }, e => { }, error => console.log(error));
-                
-                var images = [];
 
-                for (var i = 0; i < response.length; i++) {
-                  images.push(response[i].data);
-                }
+                Regula.DocumentReader.showScanner(s => { }, e => console.log(e));
+              }}
+              title="Scan document"
+            />
+            <Text style={{ padding: 5 }}></Text>
+            <Button
+              onPress={() => {
+                ImagePicker.openPicker({
+                  multiple: true,
+                  includeBase64: true
+                }).then(response => {
+                  Regula.DocumentReader.setConfig({
+                    functionality: {
+                      videoCaptureMotionControl: true,
+                      showCaptureButton: true
+                    },
+                    customization: {
+                      showResultStatusMessages: true,
+                      showStatusMessages: true
+                    },
+                    processParams: {
+                      scenario: this.state.selectedScenario,
+                      doRfid: this.state.doRfid,
+                    },
+                  }, e => { }, error => console.log(error));
 
-                Regula.DocumentReader.recognizeImages(images, s => this.handleResults(s), e => console.log(e));
-              }).catch(e => {
-                console.log("ImagePicker: " + e);
-              });
-            }}
-            title="     Scan image     "
-          />
+                  var images = [];
+
+                  for (var i = 0; i < response.length; i++) {
+                    images.push(response[i].data);
+                  }
+
+                  Regula.DocumentReader.recognizeImages(images, s => this.handleResults(s), e => console.log(e));
+                }).catch(e => {
+                  console.log("ImagePicker: " + e);
+                });
+              }}
+              title="     Scan image     "
+            />
+          </View>
         </View>
+        }
       </View>
     );
   }
