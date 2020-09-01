@@ -17,6 +17,7 @@
     "react-native-customized-image-picker": "^0.2.1",
     "react-native-document-reader-api": "^5.1.0",
     "react-native-document-reader-core-fullrfid": "^5.1.0",
+    "react-native-progress": "^4.1.2",
     "react-native-fs": "^2.16.6",
     "react-native-radio-buttons-group": "^1.0.7"
   },
