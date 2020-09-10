@@ -1,3 +1,5 @@
+# [Deprecated]
+Here is the new repository: https://github.com/regulaforensics/react-native-document-reader.
 
 #  Regula Document Reader (React Native version)
 Regula Document Reader SDK allows you to read various kinds of identification documents, passports, driving licenses, ID cards, etc. All processing is performed completely  _**offline**_  on your device. No any data leaving your device.
